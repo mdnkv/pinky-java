@@ -1,6 +1,8 @@
 package dev.mednikov.pinky;
 
 import dev.mednikov.pinky.ast.Expr;
+import dev.mednikov.pinky.interpreter.Interpreter;
+import dev.mednikov.pinky.interpreter.InterpreterResult;
 import dev.mednikov.pinky.lexer.Lexer;
 import dev.mednikov.pinky.lexer.Token;
 import dev.mednikov.pinky.parser.Parser;
@@ -43,6 +45,13 @@ public class Pinky {
             Parser parser = new Parser(tokens);
             Expr ast = parser.parse();
             System.out.println(ast.toString());
+            System.out.println("--------------------");
+
+            // Interpreter
+            System.out.println("INTERPRETER");
+            Interpreter interpreter = new Interpreter();
+            InterpreterResult interpreterResult = interpreter.interpret(ast);
+            System.out.println(interpreterResult);
             System.out.println("--------------------");
         } catch (Exception ex){
             ex.printStackTrace();

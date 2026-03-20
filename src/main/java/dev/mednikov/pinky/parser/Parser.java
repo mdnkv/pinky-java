@@ -64,11 +64,24 @@ public class Parser {
             int value = Integer.parseInt(this.previousToken().getLexeme());
             return new IntegerExpr(value);
         }
-        if (this.match(TOK_FLOAT)) {
+        else if (this.match(TOK_FLOAT)) {
             double value = Double.parseDouble(this.previousToken().getLexeme());
             return new FloatExpr(value);
         }
-        if (this.match(TOK_LPAREN)) {
+        else if (this.match(TOK_TRUE)) {
+            return new BoolExpr(true);
+        }
+        else if (this.match(TOK_FALSE)) {
+            return new BoolExpr(false);
+        }
+        else if (this.match(TOK_STRING)) {
+            String text = this.previousToken()
+                    .getLexeme()
+                    .replace("\"", "")
+                    .replace("'", "");
+            return new StrExpr(text);
+        }
+        else  if (this.match(TOK_LPAREN)) {
             Expr expr = this.expr();
             if (!this.match(TOK_RPAREN)) {
                 // raise exception

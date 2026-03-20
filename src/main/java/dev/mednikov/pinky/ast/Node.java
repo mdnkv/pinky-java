@@ -1,4 +1,5 @@
 package dev.mednikov.pinky.ast;
 
-public class Expr extends Node{
+public class Node {
+
 }

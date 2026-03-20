@@ -1,4 +1,4 @@
 package dev.mednikov.pinky.ast;
 
-public class Stmt {
+public class Stmt extends Node{
 }
