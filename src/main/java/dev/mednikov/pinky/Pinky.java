@@ -1,7 +1,9 @@
 package dev.mednikov.pinky;
 
+import dev.mednikov.pinky.ast.Expr;
 import dev.mednikov.pinky.lexer.Lexer;
 import dev.mednikov.pinky.lexer.Token;
+import dev.mednikov.pinky.parser.Parser;
 
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -34,6 +36,13 @@ public class Pinky {
             for (Token token : tokens) {
                 System.out.println(token);
             }
+            System.out.println("--------------------");
+
+            // Parser
+            System.out.println("PARSER");
+            Parser parser = new Parser(tokens);
+            Expr ast = parser.parse();
+            System.out.println(ast.toString());
             System.out.println("--------------------");
         } catch (Exception ex){
             ex.printStackTrace();
