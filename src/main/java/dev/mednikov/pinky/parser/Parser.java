@@ -89,28 +89,28 @@ public class Parser {
         return this.primary();
     }
 
-    Expr factor(){
-        return this.unary();
-    }
-
-    Expr term(){
-        Expr expr = this.factor();
+    Expr multiplication(){
+        Expr expr = this.unary();
         while (this.match(TOK_STAR) || this.match(TOK_SLASH)) {
             Token operator = this.previousToken();
-            Expr rightOperand = this.factor();
+            Expr rightOperand = this.unary();
             expr = new BinOpExpr(expr, rightOperand, operator);
         }
         return expr;
     }
 
-    Expr expr (){
-        Expr expr = this.term();
+    Expr addition (){
+        Expr expr = this.multiplication();
         while (this.match(TOK_PLUS) || this.match(TOK_MINUS)) {
             Token operator = this.previousToken();
-            Expr rightOperand = this.term();
+            Expr rightOperand = this.multiplication();
             expr = new BinOpExpr(expr, rightOperand, operator);
         }
         return expr;
+    }
+
+    Expr expr(){
+        return this.addition();
     }
 
     public Expr parse(){
