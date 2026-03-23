@@ -97,7 +97,7 @@ public class Parser {
         Expr expr = this.primary();
         while (this.match(TOK_CARET)){
             Token operator = this.previousToken();
-            Expr rightOperand = this.primary();
+            Expr rightOperand = this.exponent();
             expr = new BinOpExpr(expr, rightOperand, operator);
         }
         return expr;
@@ -163,8 +163,28 @@ public class Parser {
         return expr;
     }
 
+    Expr logicalAnd(){
+        Expr expr = this.equality();
+        while (this.match(TOK_AND)) {
+            Token operator = this.previousToken();
+            Expr rightOperand = this.equality();
+            expr = new LogicalOpExpr(operator, expr, rightOperand);
+        }
+        return expr;
+    }
+
+    Expr logicalOr(){
+        Expr expr = this.logicalAnd();
+        while (this.match(TOK_OR)) {
+            Token operator = this.previousToken();
+            Expr rightOperand = this.logicalAnd();
+            expr = new LogicalOpExpr(operator, expr, rightOperand);
+        }
+        return expr;
+    }
+
     Expr expr(){
-        return this.equality();
+        return this.logicalOr();
     }
 
     public Expr parse(){

@@ -205,6 +205,22 @@ public class Interpreter {
                 }
             }
         }
+        else if (node instanceof LogicalOpExpr logicalOpExpr) {
+            InterpreterResult leftResult = interpret(logicalOpExpr.getLeftOperand());
+            Object leftValue = leftResult.getValue();
+            if (logicalOpExpr.getOperator().getType() == TOK_OR){
+                boolean result = (boolean) leftValue;
+                if (result){
+                    return new InterpreterResult(result, RuntimeType.TYPE_BOOL);
+                }
+            } else if (logicalOpExpr.getOperator().getType() == TOK_AND){
+                boolean result = (boolean) leftValue;
+                if (!result){
+                    return new InterpreterResult(result, RuntimeType.TYPE_BOOL);
+                }
+            }
+            return this.interpret(logicalOpExpr.getRightOperand());
+        }
 
         return null;
     }
