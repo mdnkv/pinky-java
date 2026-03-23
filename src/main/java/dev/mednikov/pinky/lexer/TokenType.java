@@ -21,7 +21,7 @@ public enum TokenType {
     TOK_LT,
 
     // Two char tokens
-    TOK_EQ,
+    TOK_EQ, TOK_EQEQ,
     TOK_GE, TOK_LE, TOK_NE, TOK_GTGT, TOK_LTLT,
     TOK_ASSIGN,
 

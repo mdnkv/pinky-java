@@ -6,6 +6,18 @@ import static dev.mednikov.pinky.lexer.TokenType.*;
 
 public class Interpreter {
 
+    private boolean checkBothNumberTypes (RuntimeType type1, RuntimeType type2) {
+        return type1 == RuntimeType.TYPE_NUMBER && type2 == RuntimeType.TYPE_NUMBER;
+    }
+
+    private boolean checkBothStringTypes (RuntimeType type1, RuntimeType type2) {
+        return type1 == RuntimeType.TYPE_STRING && type2 == RuntimeType.TYPE_STRING;
+    }
+
+    private boolean checkBothBoolTypes (RuntimeType type1, RuntimeType type2) {
+        return type1 == RuntimeType.TYPE_BOOL && type2 == RuntimeType.TYPE_BOOL;
+    }
+
     public InterpreterResult interpret (Node node){
         if (node instanceof IntegerExpr expr){
             double value = expr.getValue();
@@ -34,10 +46,10 @@ public class Interpreter {
             RuntimeType rightType = rightResult.getRuntimeType();
 
             if (biOp.getOperator().getType() == TOK_PLUS){
-                if (leftType == RuntimeType.TYPE_NUMBER && rightType == RuntimeType.TYPE_NUMBER){
+                if (checkBothNumberTypes(leftType, rightType)){
                     double sum = (Double) leftValue + (Double) rightValue;
                     return new InterpreterResult(sum, RuntimeType.TYPE_NUMBER);
-                } else if (leftType == RuntimeType.TYPE_STRING || rightType == RuntimeType.TYPE_STRING){
+                } else if (checkBothStringTypes(leftType, rightType)){
                     String str = leftValue.toString() + rightValue.toString();
                     return new InterpreterResult(str, RuntimeType.TYPE_STRING);
                 } else {
@@ -46,7 +58,7 @@ public class Interpreter {
                 }
             }
             else if (biOp.getOperator().getType() == TOK_MINUS){
-                if (leftType == RuntimeType.TYPE_NUMBER && rightType == RuntimeType.TYPE_NUMBER) {
+                if (checkBothNumberTypes(leftType, rightType)) {
                     double diff = (Double) leftValue - (Double) rightValue;
                     return new InterpreterResult(diff, RuntimeType.TYPE_NUMBER);
                 } else {
@@ -56,28 +68,16 @@ public class Interpreter {
             }
             else if (biOp.getOperator().getType() == TOK_STAR){
                 // Multiply two numbers
-                if (leftType == RuntimeType.TYPE_NUMBER && rightType == RuntimeType.TYPE_NUMBER) {
+                if (checkBothNumberTypes(leftType, rightType)) {
                     double result = (Double) leftValue * (Double) rightValue;
                     return new InterpreterResult(result, RuntimeType.TYPE_NUMBER);
-                } else if (leftType == RuntimeType.TYPE_NUMBER || rightType == RuntimeType.TYPE_STRING){
-                    // Repeat string
-                    String str = rightValue.toString();
-                    int count = (int) leftValue;
-                    String result = str.repeat(count);
-                    return new InterpreterResult(result, RuntimeType.TYPE_STRING);
-                } else if (leftType == RuntimeType.TYPE_STRING || rightType == RuntimeType.TYPE_NUMBER){
-                    // Repeat string
-                    String str = leftValue.toString();
-                    int count = (int) rightValue;
-                    String result = str.repeat(count);
-                    return new InterpreterResult(result, RuntimeType.TYPE_STRING);
                 } else {
                     // todo throw exception
                     throw new RuntimeException();
                 }
             }
             else if (biOp.getOperator().getType() == TOK_SLASH){
-                if (leftType == RuntimeType.TYPE_NUMBER && rightType == RuntimeType.TYPE_NUMBER) {
+                if (checkBothNumberTypes(leftType, rightType)) {
                     double div = (Double) leftValue / (Double) rightValue;
                     return new InterpreterResult(div, RuntimeType.TYPE_NUMBER);
                 } else {
@@ -86,7 +86,7 @@ public class Interpreter {
                 }
             }
             else if (biOp.getOperator().getType() == TOK_MOD){
-                if (leftType == RuntimeType.TYPE_NUMBER && rightType == RuntimeType.TYPE_NUMBER) {
+                if (checkBothNumberTypes(leftType, rightType)) {
                     double div = (Double) leftValue % (Double) rightValue;
                     return new InterpreterResult(div, RuntimeType.TYPE_NUMBER);
                 } else {
@@ -95,11 +95,79 @@ public class Interpreter {
                 }
             }
             else if (biOp.getOperator().getType() == TOK_CARET){
-                if (leftType == RuntimeType.TYPE_NUMBER && rightType == RuntimeType.TYPE_NUMBER) {
+                if (checkBothNumberTypes(leftType, rightType)) {
                     double value = (Double) leftValue;
                     double exp = (Double) rightValue;
                     return new InterpreterResult(Math.pow(value, exp), RuntimeType.TYPE_NUMBER);
                 } else {
+                    // todo exception
+                    throw new RuntimeException();
+                }
+            }
+            else if (biOp.getOperator().getType() == TOK_GT){
+                if (checkBothNumberTypes(leftType, rightType)) {
+                    boolean value = (Double) leftValue >  (Double) rightValue;
+                    return new InterpreterResult(value, RuntimeType.TYPE_BOOL);
+                }
+                // TODO String comparison
+                else {
+                    // todo exception
+                    throw new RuntimeException();
+                }
+            }
+            else if (biOp.getOperator().getType() == TOK_GE){
+                if (checkBothNumberTypes(leftType, rightType)) {
+                    boolean value = (Double) leftValue >=  (Double) rightValue;
+                    return new InterpreterResult(value, RuntimeType.TYPE_BOOL);
+                }
+                // TODO String comparison
+                else {
+                    // todo exception
+                    throw new RuntimeException();
+                }
+            }
+            else if (biOp.getOperator().getType() == TOK_LT){
+                if (checkBothNumberTypes(leftType, rightType)) {
+                    boolean value = (Double) leftValue <  (Double) rightValue;
+                    return new InterpreterResult(value, RuntimeType.TYPE_BOOL);
+                }
+                // TODO String comparison
+                else {
+                    // todo exception
+                    throw new RuntimeException();
+                }
+            }
+            else if (biOp.getOperator().getType() == TOK_LE){
+                if (checkBothNumberTypes(leftType, rightType)) {
+                    boolean value = (Double) leftValue <=  (Double) rightValue;
+                    return new InterpreterResult(value, RuntimeType.TYPE_BOOL);
+                }
+                // TODO String comparison
+                else {
+                    // todo exception
+                    throw new RuntimeException();
+                }
+            }
+            else if (biOp.getOperator().getType() == TOK_EQEQ){
+                if (checkBothNumberTypes(leftType, rightType)
+                        || checkBothStringTypes(leftType, rightType)
+                        || checkBothBoolTypes(leftType, rightType)) {
+                    boolean value = leftValue.equals(rightValue);
+                    return new InterpreterResult(value, RuntimeType.TYPE_BOOL);
+                }
+                else {
+                    // todo exception
+                    throw new RuntimeException();
+                }
+            }
+            else if (biOp.getOperator().getType() == TOK_NE){
+                if (checkBothNumberTypes(leftType, rightType)
+                        || checkBothStringTypes(leftType, rightType)
+                        || checkBothBoolTypes(leftType, rightType)) {
+                    boolean value = !leftValue.equals(rightValue);
+                    return new InterpreterResult(value, RuntimeType.TYPE_BOOL);
+                }
+                else {
                     // todo exception
                     throw new RuntimeException();
                 }
@@ -137,6 +205,7 @@ public class Interpreter {
                 }
             }
         }
+
         return null;
     }
 

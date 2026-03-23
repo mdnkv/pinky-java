@@ -160,7 +160,7 @@ public class Lexer {
             // Handle tokens starting with equal sign
             else if (ch == '='){
                 if (this.match('=')){
-                    this.addToken(TOK_EQ);
+                    this.addToken(TOK_EQEQ);
                 }
             }
             // Handle ~

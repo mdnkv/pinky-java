@@ -93,20 +93,40 @@ public class Parser {
         throw new RuntimeException();
     }
 
+    Expr exponent(){
+        Expr expr = this.primary();
+        while (this.match(TOK_CARET)){
+            Token operator = this.previousToken();
+            Expr rightOperand = this.primary();
+            expr = new BinOpExpr(expr, rightOperand, operator);
+        }
+        return expr;
+    }
+
     Expr unary() {
         if (this.match(TOK_NOT) || this.match(TOK_MINUS) || this.match(TOK_PLUS)){
             Token operator = this.previousToken();
             Expr operand = this.unary();
             return new UnOpExpr(operand, operator);
         }
-        return this.primary();
+        return this.exponent();
+    }
+
+    Expr modulo(){
+        Expr expr = this.unary();
+        while (this.match(TOK_MOD)){
+            Token operator = this.previousToken();
+            Expr rightOperand = this.unary();
+            expr = new BinOpExpr(expr, rightOperand, operator);
+        }
+        return expr;
     }
 
     Expr multiplication(){
-        Expr expr = this.unary();
+        Expr expr = this.modulo();
         while (this.match(TOK_STAR) || this.match(TOK_SLASH)) {
             Token operator = this.previousToken();
-            Expr rightOperand = this.unary();
+            Expr rightOperand = this.modulo();
             expr = new BinOpExpr(expr, rightOperand, operator);
         }
         return expr;
@@ -122,8 +142,29 @@ public class Parser {
         return expr;
     }
 
+    Expr comparison(){
+        Expr expr = this.addition();
+        while (this.match(TOK_GT) || this.match(TOK_LT)
+                || this.match(TOK_GE) || this.match(TOK_LE)) {
+            Token operator = this.previousToken();
+            Expr rightOperand = this.addition();
+            expr = new BinOpExpr(expr, rightOperand, operator);
+        }
+        return expr;
+    }
+
+    Expr equality(){
+        Expr expr = this.comparison();
+        while (this.match(TOK_NE) || this.match(TOK_EQEQ)) {
+            Token operator = this.previousToken();
+            Expr rightOperand = this.comparison();
+            expr = new BinOpExpr(expr, rightOperand, operator);
+        }
+        return expr;
+    }
+
     Expr expr(){
-        return this.addition();
+        return this.equality();
     }
 
     public Expr parse(){
