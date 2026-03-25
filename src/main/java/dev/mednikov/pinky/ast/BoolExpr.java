@@ -4,7 +4,8 @@ public class BoolExpr extends Expr {
 
     private final boolean value;
 
-    public BoolExpr(boolean value) {
+    public BoolExpr(boolean value, int lineNumber) {
+        super(lineNumber);
         this.value = value;
     }
 

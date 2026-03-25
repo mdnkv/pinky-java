@@ -8,7 +8,8 @@ public class BinOpExpr extends Expr {
     private final Expr rightOperand;
     private final Token operator;
 
-    public BinOpExpr(Expr leftOperand, Expr rightOperand, Token operator) {
+    public BinOpExpr(Expr leftOperand, Expr rightOperand, Token operator, int lineNumber) {
+        super(lineNumber);
         this.leftOperand = leftOperand;
         this.rightOperand = rightOperand;
         this.operator = operator;

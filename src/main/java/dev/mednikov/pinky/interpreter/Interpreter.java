@@ -1,6 +1,7 @@
 package dev.mednikov.pinky.interpreter;
 
 import dev.mednikov.pinky.ast.*;
+import dev.mednikov.pinky.exceptions.InterpreterException;
 
 import static dev.mednikov.pinky.lexer.TokenType.*;
 
@@ -53,8 +54,7 @@ public class Interpreter {
                     String str = leftValue.toString() + rightValue.toString();
                     return new InterpreterResult(str, RuntimeType.TYPE_STRING);
                 } else {
-                    // todo throw exception
-                    throw new RuntimeException();
+                    throw new InterpreterException("Unsupported operator: " + biOp.getOperator(), biOp.getLineNumber());
                 }
             }
             else if (biOp.getOperator().getType() == TOK_MINUS){
@@ -62,8 +62,7 @@ public class Interpreter {
                     double diff = (Double) leftValue - (Double) rightValue;
                     return new InterpreterResult(diff, RuntimeType.TYPE_NUMBER);
                 } else {
-                    // todo throw exception
-                    throw new RuntimeException();
+                    throw new InterpreterException("Unsupported operator: " + biOp.getOperator(), biOp.getLineNumber());
                 }
             }
             else if (biOp.getOperator().getType() == TOK_STAR){
@@ -72,8 +71,7 @@ public class Interpreter {
                     double result = (Double) leftValue * (Double) rightValue;
                     return new InterpreterResult(result, RuntimeType.TYPE_NUMBER);
                 } else {
-                    // todo throw exception
-                    throw new RuntimeException();
+                    throw new InterpreterException("Unsupported operator: " + biOp.getOperator(), biOp.getLineNumber());
                 }
             }
             else if (biOp.getOperator().getType() == TOK_SLASH){
@@ -81,8 +79,7 @@ public class Interpreter {
                     double div = (Double) leftValue / (Double) rightValue;
                     return new InterpreterResult(div, RuntimeType.TYPE_NUMBER);
                 } else {
-                    // todo exception
-                    throw new RuntimeException();
+                    throw new InterpreterException("Unsupported operator: " + biOp.getOperator(), biOp.getLineNumber());
                 }
             }
             else if (biOp.getOperator().getType() == TOK_MOD){
@@ -90,8 +87,7 @@ public class Interpreter {
                     double div = (Double) leftValue % (Double) rightValue;
                     return new InterpreterResult(div, RuntimeType.TYPE_NUMBER);
                 } else {
-                    // todo exception
-                    throw new RuntimeException();
+                    throw new InterpreterException("Unsupported operator: " + biOp.getOperator(), biOp.getLineNumber());
                 }
             }
             else if (biOp.getOperator().getType() == TOK_CARET){
@@ -100,8 +96,7 @@ public class Interpreter {
                     double exp = (Double) rightValue;
                     return new InterpreterResult(Math.pow(value, exp), RuntimeType.TYPE_NUMBER);
                 } else {
-                    // todo exception
-                    throw new RuntimeException();
+                    throw new InterpreterException("Unsupported operator: " + biOp.getOperator(), biOp.getLineNumber());
                 }
             }
             else if (biOp.getOperator().getType() == TOK_GT){
@@ -111,8 +106,7 @@ public class Interpreter {
                 }
                 // TODO String comparison
                 else {
-                    // todo exception
-                    throw new RuntimeException();
+                    throw new InterpreterException("Unsupported operator: " + biOp.getOperator(), biOp.getLineNumber());
                 }
             }
             else if (biOp.getOperator().getType() == TOK_GE){
@@ -122,8 +116,7 @@ public class Interpreter {
                 }
                 // TODO String comparison
                 else {
-                    // todo exception
-                    throw new RuntimeException();
+                    throw new InterpreterException("Unsupported operator: " + biOp.getOperator(), biOp.getLineNumber());
                 }
             }
             else if (biOp.getOperator().getType() == TOK_LT){
@@ -133,8 +126,7 @@ public class Interpreter {
                 }
                 // TODO String comparison
                 else {
-                    // todo exception
-                    throw new RuntimeException();
+                    throw new InterpreterException("Unsupported operator: " + biOp.getOperator(), biOp.getLineNumber());
                 }
             }
             else if (biOp.getOperator().getType() == TOK_LE){
@@ -144,8 +136,7 @@ public class Interpreter {
                 }
                 // TODO String comparison
                 else {
-                    // todo exception
-                    throw new RuntimeException();
+                    throw new InterpreterException("Unsupported operator: " + biOp.getOperator(), biOp.getLineNumber());
                 }
             }
             else if (biOp.getOperator().getType() == TOK_EQEQ){
@@ -156,8 +147,7 @@ public class Interpreter {
                     return new InterpreterResult(value, RuntimeType.TYPE_BOOL);
                 }
                 else {
-                    // todo exception
-                    throw new RuntimeException();
+                    throw new InterpreterException("Unsupported operator: " + biOp.getOperator(), biOp.getLineNumber());
                 }
             }
             else if (biOp.getOperator().getType() == TOK_NE){
@@ -168,8 +158,7 @@ public class Interpreter {
                     return new InterpreterResult(value, RuntimeType.TYPE_BOOL);
                 }
                 else {
-                    // todo exception
-                    throw new RuntimeException();
+                    throw new InterpreterException("Unsupported operator: " + biOp.getOperator(), biOp.getLineNumber());
                 }
             }
         }

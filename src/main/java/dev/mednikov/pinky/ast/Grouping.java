@@ -4,7 +4,8 @@ public class Grouping extends Expr{
 
     private final Expr value;
 
-    public Grouping(Expr value) {
+    public Grouping(Expr value, int lineNumber) {
+        super(lineNumber);
         this.value = value;
     }
 

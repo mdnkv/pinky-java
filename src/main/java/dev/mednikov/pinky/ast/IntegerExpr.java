@@ -4,7 +4,8 @@ public class IntegerExpr extends Expr {
     
     private final int value;
     
-    public IntegerExpr(int value) {
+    public IntegerExpr(int value, int lineNumber) {
+        super(lineNumber);
         this.value = value;
     }
 

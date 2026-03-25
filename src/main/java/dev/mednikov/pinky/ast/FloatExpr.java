@@ -4,7 +4,8 @@ public class FloatExpr extends Expr {
 
     private final double value;
 
-    public FloatExpr(double value) {
+    public FloatExpr(double value, int lineNumber) {
+        super(lineNumber);
         this.value = value;
     }
 

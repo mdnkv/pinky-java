@@ -8,7 +8,8 @@ public class LogicalOpExpr extends Expr {
     private final Expr leftOperand;
     private final Expr rightOperand;
 
-    public LogicalOpExpr(Token operator, Expr leftOperand, Expr rightOperand) {
+    public LogicalOpExpr(Token operator, Expr leftOperand, Expr rightOperand, int lineNumber) {
+        super(lineNumber);
         this.operator = operator;
         this.leftOperand = leftOperand;
         this.rightOperand = rightOperand;

@@ -4,7 +4,8 @@ public class StrExpr extends Expr {
 
     private final String value;
 
-    public StrExpr(String value) {
+    public StrExpr(String value, int line) {
+        super(line);
         this.value = value;
     }
 

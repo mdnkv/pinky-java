@@ -1,5 +1,7 @@
 package dev.mednikov.pinky.lexer;
 
+import dev.mednikov.pinky.exceptions.LexerException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -63,8 +65,7 @@ public class Lexer {
             this.advance();
         }
         if (this.curr >= this.source.length()) {
-            // todo raise exception
-            throw new RuntimeException("Unexpected end of string");
+            throw new LexerException("UUnterminated string", this.line);
         }
         this.advance();
         this.addToken(TOK_STRING);
@@ -206,6 +207,8 @@ public class Lexer {
             // handle identifiers
             else if (Character.isLetterOrDigit(ch) || ch == '_'){
                 this.handleIdentifier();
+            } else {
+                throw new LexerException("Error at '" + ch + "': Unexpected character.", this.line);
             }
         }
         return this.tokens;

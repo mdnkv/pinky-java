@@ -7,7 +7,8 @@ public class UnOpExpr extends Expr {
     private final Expr operand;
     private final Token operator;
 
-    public UnOpExpr(Expr operand, Token operator) {
+    public UnOpExpr(Expr operand, Token operator, int line) {
+        super(line);
         this.operand = operand;
         this.operator = operator;
     }

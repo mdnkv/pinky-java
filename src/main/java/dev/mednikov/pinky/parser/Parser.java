@@ -1,6 +1,7 @@
 package dev.mednikov.pinky.parser;
 
 import dev.mednikov.pinky.ast.*;
+import dev.mednikov.pinky.exceptions.ParserException;
 import dev.mednikov.pinky.lexer.Token;
 import dev.mednikov.pinky.lexer.TokenType;
 
@@ -33,13 +34,14 @@ public class Parser {
 
     Token expect (TokenType expected){
         if (this.curr >= tokens.size()) {
-            // todo exception
-            throw new RuntimeException();
+            throw new ParserException("Found " + this.previousToken().getLexeme() + " at the end of parsing", this.previousToken().getLineNumber());
         } else if (this.peek().getType() == expected) {
             return this.advance();
         } else {
-            // todo exception
-            throw new RuntimeException();
+            throw new ParserException(
+                    "Expected " + expected.toString() + ", found " + this.peek().getLexeme() + ".",
+                    this.peek().getLineNumber()
+            );
         }
     }
 
@@ -62,35 +64,34 @@ public class Parser {
     Expr primary(){
         if (this.match(TOK_INTEGER)) {
             int value = Integer.parseInt(this.previousToken().getLexeme());
-            return new IntegerExpr(value);
+            return new IntegerExpr(value, this.previousToken().getLineNumber());
         }
         else if (this.match(TOK_FLOAT)) {
             double value = Double.parseDouble(this.previousToken().getLexeme());
-            return new FloatExpr(value);
+            return new FloatExpr(value, this.previousToken().getLineNumber());
         }
         else if (this.match(TOK_TRUE)) {
-            return new BoolExpr(true);
+            return new BoolExpr(true, this.previousToken().getLineNumber());
         }
         else if (this.match(TOK_FALSE)) {
-            return new BoolExpr(false);
+            return new BoolExpr(false, this.previousToken().getLineNumber());
         }
         else if (this.match(TOK_STRING)) {
             String text = this.previousToken()
                     .getLexeme()
                     .replace("\"", "")
                     .replace("'", "");
-            return new StrExpr(text);
+            return new StrExpr(text, this.previousToken().getLineNumber());
         }
         else  if (this.match(TOK_LPAREN)) {
             Expr expr = this.expr();
             if (!this.match(TOK_RPAREN)) {
                 // raise exception
-                throw new RuntimeException();
+                throw new ParserException("Error: ) expected", this.previousToken().getLineNumber());
             }
-            return new Grouping(expr);
+            return new Grouping(expr, this.previousToken().getLineNumber());
         }
-        // todo exception
-        throw new RuntimeException();
+        throw new ParserException("Parser error", this.previousToken().getLineNumber());
     }
 
     Expr exponent(){
@@ -98,7 +99,7 @@ public class Parser {
         while (this.match(TOK_CARET)){
             Token operator = this.previousToken();
             Expr rightOperand = this.exponent();
-            expr = new BinOpExpr(expr, rightOperand, operator);
+            expr = new BinOpExpr(expr, rightOperand, operator, operator.getLineNumber());
         }
         return expr;
     }
@@ -107,7 +108,7 @@ public class Parser {
         if (this.match(TOK_NOT) || this.match(TOK_MINUS) || this.match(TOK_PLUS)){
             Token operator = this.previousToken();
             Expr operand = this.unary();
-            return new UnOpExpr(operand, operator);
+            return new UnOpExpr(operand, operator, operator.getLineNumber());
         }
         return this.exponent();
     }
@@ -117,7 +118,7 @@ public class Parser {
         while (this.match(TOK_MOD)){
             Token operator = this.previousToken();
             Expr rightOperand = this.unary();
-            expr = new BinOpExpr(expr, rightOperand, operator);
+            expr = new BinOpExpr(expr, rightOperand, operator, operator.getLineNumber());
         }
         return expr;
     }
@@ -127,7 +128,7 @@ public class Parser {
         while (this.match(TOK_STAR) || this.match(TOK_SLASH)) {
             Token operator = this.previousToken();
             Expr rightOperand = this.modulo();
-            expr = new BinOpExpr(expr, rightOperand, operator);
+            expr = new BinOpExpr(expr, rightOperand, operator, operator.getLineNumber());
         }
         return expr;
     }
@@ -137,7 +138,7 @@ public class Parser {
         while (this.match(TOK_PLUS) || this.match(TOK_MINUS)) {
             Token operator = this.previousToken();
             Expr rightOperand = this.multiplication();
-            expr = new BinOpExpr(expr, rightOperand, operator);
+            expr = new BinOpExpr(expr, rightOperand, operator, operator.getLineNumber());
         }
         return expr;
     }
@@ -148,7 +149,7 @@ public class Parser {
                 || this.match(TOK_GE) || this.match(TOK_LE)) {
             Token operator = this.previousToken();
             Expr rightOperand = this.addition();
-            expr = new BinOpExpr(expr, rightOperand, operator);
+            expr = new BinOpExpr(expr, rightOperand, operator, operator.getLineNumber());
         }
         return expr;
     }
@@ -158,7 +159,7 @@ public class Parser {
         while (this.match(TOK_NE) || this.match(TOK_EQEQ)) {
             Token operator = this.previousToken();
             Expr rightOperand = this.comparison();
-            expr = new BinOpExpr(expr, rightOperand, operator);
+            expr = new BinOpExpr(expr, rightOperand, operator, operator.getLineNumber());
         }
         return expr;
     }
@@ -168,7 +169,7 @@ public class Parser {
         while (this.match(TOK_AND)) {
             Token operator = this.previousToken();
             Expr rightOperand = this.equality();
-            expr = new LogicalOpExpr(operator, expr, rightOperand);
+            expr = new LogicalOpExpr(operator, expr, rightOperand, operator.getLineNumber());
         }
         return expr;
     }
@@ -178,7 +179,7 @@ public class Parser {
         while (this.match(TOK_OR)) {
             Token operator = this.previousToken();
             Expr rightOperand = this.logicalAnd();
-            expr = new LogicalOpExpr(operator, expr, rightOperand);
+            expr = new LogicalOpExpr(operator, expr, rightOperand, operator.getLineNumber());
         }
         return expr;
     }
