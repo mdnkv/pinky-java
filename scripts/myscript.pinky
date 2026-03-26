@@ -1,3 +1,5 @@
 print 1 + 2
-print 3 * 2^2
-println("test")
+if 5 > 2 then
+    print("then is executed 1")
+    print("then is executed 2")
+    print("then is executed 3")

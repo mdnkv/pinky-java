@@ -200,16 +200,31 @@ public class Parser {
         return null;
     }
 
+    Stmt ifStmt() {
+        this.expect(TOK_IF);
+        Expr testCondition = this.expr();
+        this.expect(TOK_THEN);
+        StatementList thenStmts = this.stmts();
+        StatementList elseStmts = null;
+        if (this.isNext(TOK_ELSE)) {
+            this.advance();
+            elseStmts = this.stmts();
+        }
+        return new IfStmt(this.previousToken().getLineNumber(), testCondition, thenStmts, elseStmts);
+    }
+
     Stmt stmt(){
         if (this.peek().getType() == TOK_PRINT || this.peek().getType() == TOK_PRINTLN){
             return this.printStmt();
+        } else if (this.peek().getType() == TOK_IF){
+            return this.ifStmt();
         }
         return null;
     }
 
     StatementList stmts(){
         List<Stmt> stmts = new ArrayList<>();
-        while (this.curr < this.tokens.size()) {
+        while (this.curr < this.tokens.size() && !this.isNext(TOK_ELSE) && !this.isNext(TOK_END)) {
             Stmt stmt = this.stmt();
             stmts.add(stmt);
         }

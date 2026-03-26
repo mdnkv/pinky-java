@@ -219,6 +219,20 @@ public class Interpreter {
             InterpreterResult result = this.interpret(printStmt.getExpr());
             System.out.println(result.getValue());
         }
+        else if (node instanceof IfStmt ifStmt) {
+            InterpreterResult conditionResult = this.interpret(ifStmt.getCondition());
+            if (conditionResult.getRuntimeType() != RuntimeType.TYPE_BOOL){
+                throw new InterpreterException("Expecting boolean condition", ifStmt.getLineNumber());
+            }
+            boolean condition = (boolean) conditionResult.getValue();
+            if (condition){
+                this.interpret(ifStmt.getThenStmts());
+            } else {
+                if (ifStmt.getElseStmts() != null) {
+                    this.interpret(ifStmt.getElseStmts());
+                }
+            }
+        }
         return null;
     }
 
