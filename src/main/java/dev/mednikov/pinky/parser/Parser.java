@@ -5,6 +5,7 @@ import dev.mednikov.pinky.exceptions.ParserException;
 import dev.mednikov.pinky.lexer.Token;
 import dev.mednikov.pinky.lexer.TokenType;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static dev.mednikov.pinky.lexer.TokenType.*;
@@ -188,8 +189,39 @@ public class Parser {
         return this.logicalOr();
     }
 
-    public Expr parse(){
-       return this.expr();
+    Stmt printStmt(){
+        if (this.match(TOK_PRINT)){
+            Expr expr = this.expr();
+            return new PrintStmt(this.previousToken().getLineNumber(), expr, false);
+        } else if (this.match(TOK_PRINTLN)){
+            Expr expr = this.expr();
+            return new PrintStmt(this.previousToken().getLineNumber(), expr, true);
+        }
+        return null;
+    }
+
+    Stmt stmt(){
+        if (this.peek().getType() == TOK_PRINT || this.peek().getType() == TOK_PRINTLN){
+            return this.printStmt();
+        }
+        return null;
+    }
+
+    StatementList stmts(){
+        List<Stmt> stmts = new ArrayList<>();
+        while (this.curr < this.tokens.size()) {
+            Stmt stmt = this.stmt();
+            stmts.add(stmt);
+        }
+        return new StatementList(this.previousToken().getLineNumber(), stmts);
+    }
+
+    Node program(){
+        return this.stmts();
+    }
+
+    public Node parse(){
+       return this.program();
     }
 
 

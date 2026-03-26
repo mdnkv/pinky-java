@@ -210,7 +210,15 @@ public class Interpreter {
             }
             return this.interpret(logicalOpExpr.getRightOperand());
         }
-
+        else if (node instanceof StatementList stmtList) {
+            for (Stmt stmt : stmtList.getStatements()) {
+                this.interpret(stmt);
+            }
+        }
+        else if (node instanceof PrintStmt printStmt) {
+            InterpreterResult result = this.interpret(printStmt.getExpr());
+            System.out.println(result.getValue());
+        }
         return null;
     }
 
